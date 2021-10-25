@@ -36,6 +36,8 @@ class GeneTranslator:
         return result_dict
 
     def load_dictionary(self):
+        assert path.isfile(self.dictionary_file_path), \
+            'Gene dictionary is missing! call GeneTranslator.generate_dictionaries first'
         with open(self.dictionary_file_path, 'rb') as f:
             self.dictionary = pl.load(f)
 
