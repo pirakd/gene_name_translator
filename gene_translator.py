@@ -11,18 +11,31 @@ class DictionaryEntry:
         self.symbol = symbol
         self.symbol_aliases = symbol_aliases
 
-
 class GeneTranslator:
-    def __init__(self):
+    def __init__(self, verbosity=True):
         self.raw_data_folder = 'hgnc_complete_set.txt'
         self.dictionary_file_name = 'gene_dictionary.pl'
         self.dictionary = None
-
+        self.verbosity = True
     def translate(self, query, query_type, return_type):
+        keys_not_found = list()
+        targets_not_found = list()
         result_dict = dict()
         dictionary = self.dictionary[query_type]
         for q in query:
-            result_dict[q] = getattr(dictionary[q], return_type)
+            if q in dictionary:
+                result = getattr(dictionary[q], return_type)
+                if result is None:
+                    targets_not_found.append(q)
+                result_dict[q] = getattr(dictionary[q], return_type)
+            else:
+                keys_not_found.append(q)
+
+        if len(keys_not_found):
+            print('genes {} were not found ({} genes)'.format(keys_not_found, len(keys_not_found)))
+        if len(targets_not_found):
+            print('no translations for genes {} ({} genes)'.format(targets_not_found, len(targets_not_found)))
+
         return result_dict
 
     def load_dictionary(self):
