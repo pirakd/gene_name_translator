@@ -39,13 +39,16 @@ class GeneTranslator:
     def load_dictionary(self):
         assert path.isfile(self.dictionary_file_path), \
             'Gene dictionary is missing! call GeneTranslator.generate_dictionaries first'
+
         with open(self.dictionary_file_path, 'rb') as f:
             self.dictionary = pl.load(f)
+        if self.verbosity:
+            print('available query types : {}'.format([x for x in self.dictionary.keys()]))
 
     def generate_dictionaries(self, keys=None):
 
         if keys is None:
-            keys = ['symbol', 'entrez_id', 'uniprot']
+            keys = ['symbol', 'entrez_id', 'uniprot', 'ensemble_gene_id']
         dictionaries = dict()
         for key in keys:
             dictionaries[key] = self.generate_dictionary(key)
@@ -54,7 +57,7 @@ class GeneTranslator:
         return dictionaries
 
     def generate_dictionary(self, key):
-        name_df = pd.read_csv(self.raw_data_file_path, delimiter='\t', index_col=False)
+        name_df = pd.read_csv(self.raw_data_file_path, delimiter='\t', index_col=False, low_memory=False)
 
         dictionary = dict()
         row_values = dict()
