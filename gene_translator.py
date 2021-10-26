@@ -10,6 +10,7 @@ class GeneTranslator:
         self.root_folder = path.dirname(path.realpath(__file__))
         self.raw_data_folder = 'hgnc_complete_set.txt'
         self.dictionary_file_name = 'gene_dictionary.pl'
+        self.raw_data_file_path = path.join(self.root_folder, self.raw_data_folder)
         self.dictionary_file_path = path.join(self.root_folder, self.dictionary_file_name)
         self.dictionary = None
         self.verbosity = verbosity
