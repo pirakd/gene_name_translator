@@ -2,7 +2,6 @@ import pandas as pd
 import pickle as pl
 import tqdm
 from os import path
-import sys
 
 
 class GeneTranslator:
@@ -78,18 +77,15 @@ class GeneTranslator:
                     prev_symbols = row.prev_symbol.split('|')
 
                 aliases = list(set([symbol] + aliases + prev_symbols))
-                entrez_id = int(row.entrez_id) if not pd.isnull(row.entrez_id) else None
-                uniprot = row.uniprot_ids if not pd.isnull(row.uniprot_ids) else None
-                ensembl_gene_id = row.ensembl_gene_id if not pd.isnull(row.ensembl_gene_id) else None
+
+                query_dict = dict(entrez_id=row_values['entrez_id'], uniprot=row_values['uniprot'],
+                                  ensembl_gene_id=row_values['ensemble_gene_id'],
+                                  symbol=row_values['symbol'], symbol_aliases=aliases)
 
                 if key == 'symbol':
                     for alias in aliases:
                         if alias == symbol or alias not in dictionary:
-                            dictionary[alias] = dict(entrez_id=entrez_id, uniprot=uniprot,
-                                                     ensembl_gene_id=ensembl_gene_id, symbol=symbol,
-                                                     symbol_aliases=aliases)
+                            dictionary[alias] = query_dict
                 else:
-                    dictionary[row_values[key]] = dict(entrez_id=entrez_id, uniprot=uniprot,
-                                             ensembl_gene_id=ensembl_gene_id, symbol=symbol,
-                                             symbol_aliases=aliases)
+                    dictionary[row_values[key]] = query_dict
         return dictionary
