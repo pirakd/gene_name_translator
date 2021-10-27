@@ -1,5 +1,5 @@
 
-# Gene Name Translator
+# (Human) Gene Name Translator
 
 -- See working example in [example.py](https://github.com/pirakd/gene_name_translator/blob/main/example.py)
 
