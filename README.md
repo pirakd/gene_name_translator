@@ -5,7 +5,6 @@
 
 -- Default supported formats: 'symbol', 'entrez_id', 'uniprot', 'ensemble_gene_id'
 
--- Aliases and obsolete names of 'symbol' are can queired and found
 
 ### Further Use 
 -- Additional query types can be added by calling: 
