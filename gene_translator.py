@@ -3,7 +3,7 @@ import pickle as pl
 import tqdm
 from os import path
 import sys
-
+import copy
 
 class GeneTranslator:
     def __init__(self, verbosity=True):
@@ -12,8 +12,10 @@ class GeneTranslator:
         self.dictionary_file_name = 'gene_dictionary.pl'
         self.raw_data_file_path = path.join(self.root_folder, self.raw_data_file)
         self.dictionary_file_path = path.join(self.root_folder, self.dictionary_file_name)
+        self.old_entrez_id_file_path = path.join(self.root_folder, 'old_entrez.txt')
         self.dictionary = None
         self.verbosity = verbosity
+        self.load_old_enterz_ids = True
 
     def translate(self, query, query_type, return_type):
         keys_not_found = list()
@@ -49,8 +51,14 @@ class GeneTranslator:
         dictionaries = dict()
         for key in keys:
             dictionaries[key] = self.generate_dictionary(key)
+
+        if self.load_old_enterz_ids:
+            dictionaries = self.load_old_entrez_ids_from_file(dictionaries)
+
         with open(self.dictionary_file_path, 'wb') as f:
             pl.dump(dictionaries, f)
+
+
         return dictionaries
 
     def generate_dictionary(self, key):
@@ -90,3 +98,13 @@ class GeneTranslator:
                                              ensembl_gene_id=ensembl_gene_id, symbol=symbol,
                                              symbol_aliases=aliases)
         return dictionary
+
+    def load_old_entrez_ids_from_file(self, dictionaries):
+        with open(self.old_entrez_id_file_path, 'r') as f:
+            lines = f.readlines()
+        for line in lines[1:]:
+            line = line.strip()
+            official_name, old_name = line.split('\t')
+            dictionaries['entrez_id'][int(old_name)] = dictionaries['entrez_id'][int(official_name)]
+
+        return dictionaries
