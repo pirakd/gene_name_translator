@@ -15,4 +15,5 @@ GeneTranslator.generate_dictionaries(keys=[list_of_new_keys])
 
 ### Data Source 
 
-All data is taken from https://www.genenames.org
+-- Official genes names are taken from https://www.genenames.org.  
+-- Old names list is taken from NCBI gene history dataset that can be found at: https://ftp.ncbi.nih.gov/gene/DATA/ , last updated: 2021-12-05 21:23.
