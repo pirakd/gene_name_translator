@@ -34,7 +34,6 @@ class GeneTranslator:
                     targets_not_found.append(q)
             else:
                 result = self.query_old_name(q, query_type, return_type)
-                i+=1
                 if result is None:
                     keys_not_found.append(q)
 
@@ -58,7 +57,7 @@ class GeneTranslator:
         if self.verbosity:
             print('available query types : {}'.format([x for x in self.dictionary.keys()]))
 
-    def generate_dictionaries(self, keys=None):
+    def generate_dictionaries(self):
 
         keys = ['symbol', 'entrez_id']
         dictionaries = dict()
@@ -105,7 +104,6 @@ class GeneTranslator:
 
     def load_old_names(self, dictionaries):
         keys = ['entrez_id', 'obsolete_entrez_id',	'obsolete_symbol']
-
         old_names_dictionary = {key:dict() for key in keys}
 
         with open(self.old_names_file_path, 'r') as f:
@@ -120,6 +118,7 @@ class GeneTranslator:
                         old_names_dictionary[keys[0]][entrez_id] = defaultdict(list)
                     old_names_dictionary[keys[0]][entrez_id][keys[1]].append(old_entrez_id)
                     old_names_dictionary[keys[0]][entrez_id][keys[2]].append(old_symbol)
+
 
                 if old_entrez_id not in old_names_dictionary[keys[1]]:
                     old_names_dictionary[keys[1]][old_entrez_id] = defaultdict(list)
@@ -138,6 +137,7 @@ class GeneTranslator:
 
     def query_old_name(self, q, query_type, return_type):
         query = self.old_names_mapping[self.new_to_old_keys_mapping[query_type]].get(q, None)
+
         if query is not None:
             if 'entrez_id' in query:
                 result = self.dictionary['entrez_id'].get(query['entrez_id'][0], None)
@@ -149,4 +149,5 @@ class GeneTranslator:
             query = self.old_names_mapping['entrez_id'].get(q, None)
             if query:
                 return query[self.new_to_old_keys_mapping[return_type]][0]
+
         return None
