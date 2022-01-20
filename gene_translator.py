@@ -36,7 +36,7 @@ class GeneTranslator:
                 result = self.query_old_name(q, query_type, return_type)
                 if result is None:
                     keys_not_found.append(q)
-
+                    continue
             result_dict[q] = result
 
         if len(keys_not_found):
@@ -143,7 +143,12 @@ class GeneTranslator:
                 result = self.dictionary['entrez_id'].get(query['entrez_id'][0], None)
                 if result:
                     return result[return_type]
-            return query[self.new_to_old_keys_mapping[return_type]][0]
+            result = query[self.new_to_old_keys_mapping[return_type]]
+            if result:
+                return result[0]
+            else:
+                return None
+
 
         if query_type == 'entrez_id':
             query = self.old_names_mapping['entrez_id'].get(q, None)
