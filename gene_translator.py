@@ -49,8 +49,8 @@ class GeneTranslator:
     def load_dictionary(self):
         if not path.isfile(self.dictionary_file_path) :
             print('Gene dictionary is missing! Generating dictionary...')
+            self.generate_dictionaries()
 
-        self.generate_dictionaries()
         with open(self.dictionary_file_path, 'rb') as f:
             save_dict = pl.load(f)
         self.dictionary = save_dict['dictionary']
