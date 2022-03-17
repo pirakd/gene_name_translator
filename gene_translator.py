@@ -9,10 +9,10 @@ class GeneTranslator:
     def __init__(self, verbosity=True):
         self.root_folder = path.dirname(path.realpath(__file__))
         self.raw_data_file = 'Homo_sapiens.gene_info'
-        self.dictionary_file_name = 'gene_dictionary.pl'
+        self.dictionary_filename = 'gene_dictionary.pl'
         self.old_names_file = 'gene_history.txt'
         self.raw_data_file_path = path.join(self.root_folder, self.raw_data_file)
-        self.dictionary_file_path = path.join(self.root_folder, self.dictionary_file_name)
+        self.dictionary_file_path = path.join(self.root_folder, self.dictionary_filename)
         self.old_names_file_path = path.join(self.root_folder, self.old_names_file)
         self.dictionary = None
         self.old_names_mapping = None
@@ -22,6 +22,8 @@ class GeneTranslator:
                                'entrez_id': 'obsolete_entrez_id'}
 
     def translate(self, query, query_type, return_type):
+        if not isinstance(query, (list, set, tuple)):
+            query = [query]
         keys_not_found = list()
         targets_not_found = list()
         result_dict = dict()
@@ -39,10 +41,11 @@ class GeneTranslator:
                     continue
             result_dict[q] = result
 
-        if len(keys_not_found):
-            print('{} genes were not found ({}))'.format(len(keys_not_found), keys_not_found))
-        if len(targets_not_found):
-            print('{} translations are missing ({})'.format(len(targets_not_found), targets_not_found))
+        if self.verbosity:
+            if len(keys_not_found):
+                print('{} genes were not found ({}))'.format(len(keys_not_found), keys_not_found))
+            if len(targets_not_found):
+                print('{} translations are missing ({})'.format(len(targets_not_found), targets_not_found))
 
         return result_dict
 
