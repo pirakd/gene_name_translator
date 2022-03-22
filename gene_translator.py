@@ -3,7 +3,8 @@ import pickle as pl
 import tqdm
 from os import path
 from collections import defaultdict
-
+import numpy as np
+from collections.abc import Iterable
 
 class GeneTranslator:
     def __init__(self, verbosity=True):
@@ -22,7 +23,7 @@ class GeneTranslator:
                                'entrez_id': 'obsolete_entrez_id'}
 
     def translate(self, query, query_type, return_type):
-        if not isinstance(query, (list, set, tuple)):
+        if not isinstance(query, Iterable):
             query = [query]
         keys_not_found = list()
         targets_not_found = list()
