@@ -86,22 +86,21 @@ class GeneTranslator:
 
         for idx, row in tqdm.tqdm(name_df.iterrows(), desc='Generating dictionary with {} keys'.format(key),
                                   total=len(name_df)):
-            row_values['symbol'] = row.symbol
+            row_values['symbol'] = row.Symbol_from_nomenclature_authority if  row.Symbol_from_nomenclature_authority != '-' else row.symbol
             row_values['entrez_id'] = int(row.entrez_id) if not pd.isnull(row.entrez_id) else None
             if not pd.isnull(row_values[key]):
-                symbol = row.symbol
                 aliases = []
                 if not pd.isnull(row.alias_symbol):
                     aliases = row.alias_symbol.split('|')
 
-                aliases = list(set([symbol] + aliases))
+                aliases = list(set([row_values['symbol']] + aliases))
 
                 query_dict = dict(entrez_id=row_values['entrez_id'],
                                   symbol=row_values['symbol'], symbol_aliases=aliases)
 
                 if key == 'symbol':
                     for alias in aliases:
-                        if alias == symbol or alias not in dictionary:
+                        if alias == row_values['symbol'] or alias not in dictionary:
                             dictionary[alias] = query_dict
                 else:
                     dictionary[row_values[key]] = query_dict
