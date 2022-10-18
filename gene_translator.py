@@ -2,7 +2,7 @@ import pandas as pd
 import pickle as pl
 from tqdm import tqdm
 from os import path, remove
-from collections.abc import Iterable
+import numpy as np
 from collections import defaultdict
 import gzip
 import urllib.request
@@ -29,8 +29,10 @@ class GeneTranslator:
                                            'alias_symbol': 'Synonyms'}
 
     def translate(self, query, query_type, return_type):
-        if not isinstance(query, Iterable):
+        single_query_flag = False
+        if not isinstance(query, (tuple, list, np.ndarray, set)):
             query = [query]
+            single_query_flag = True
         keys_not_found = list()
         targets_not_found = list()
         result_dict = dict()
@@ -40,6 +42,14 @@ class GeneTranslator:
                 result = dictionary[q][return_type]
                 if result is None:
                     targets_not_found.append(q)
+            elif isinstance(q, str) and q.upper() in dictionary:
+                result = dictionary[q.upper()][return_type]
+                if result is None:
+                    targets_not_found.append(q)
+            elif isinstance(q, str) and q.lower() in dictionary:
+                result = dictionary[q.lower()][return_type]
+                if result is None:
+                        targets_not_found.append(q)
             else:
                 result = self.query_old_name(q, query_type, return_type)
                 if result is None:
@@ -53,6 +63,11 @@ class GeneTranslator:
             if len(targets_not_found):
                 print('{} translations are missing ({})'.format(len(targets_not_found), targets_not_found))
 
+        if single_query_flag:
+            if len(result_dict):
+                return result_dict[query[0]]
+            else:
+                return None
         return result_dict
 
     def load_dictionary(self):
