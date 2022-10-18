@@ -3,8 +3,8 @@ from gene_translator import GeneTranslator
 if __name__ == '__main__':
 
     translator = GeneTranslator()
-    # this should be done only once after clone
-    translator.generate_dictionaries()
+
+    # On first run translator will initiate itself
     translator.load_dictionary()
 
     entrez_to_symbol = translator.translate([339457, 46], 'entrez_id', 'symbol')

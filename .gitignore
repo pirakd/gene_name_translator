@@ -1,3 +1,6 @@
 __pycache__/
 gene_dictionary.pl
 *.idea
+
+#For MAC
+.DS_Store
