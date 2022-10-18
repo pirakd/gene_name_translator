@@ -9,4 +9,3 @@
 ### Data Source 
 
 -- Gene names and old names are taken from NCBI : https://ftp.ncbi.nih.gov/gene/DATA
-
